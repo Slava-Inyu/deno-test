@@ -40,6 +40,9 @@ Deno.test({
   },
 });
 
+// --- Note ---
+// No need for separate `trackConversion` check
+// as it consists of `addData` (Conversion) + `flushData`
 Deno.test({
   name: "addData + flushData",
   fn: async () => {
