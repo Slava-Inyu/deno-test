@@ -1,5 +1,5 @@
-import { assertEquals } from "std/testing/asserts.ts";
-import { KameleoonClient } from "@kameleoon/nodejs-sdk";
+import { assertEquals, assertObjectMatch } from "std/testing/asserts.ts";
+import { KameleoonClient, CustomData } from "@kameleoon/nodejs-sdk";
 
 const visitorCode = "test";
 const featureKey = "ff_new_rules";
@@ -7,6 +7,64 @@ const experimentId = 136200;
 
 const client = new KameleoonClient({ siteCode: "tndueuutdq" });
 await client.initialize();
+
+Deno.test({
+  name: "onConfigurationUpdate",
+  fn: () => {},
+});
+
+Deno.test({
+  name: "getRemoteData",
+  fn: async () => {
+    const remoteData = await client.getRemoteData("test-1");
+
+    const expectedRemoteData = {
+      "some field to insert or update": "some value",
+    };
+
+    assertEquals(remoteData, expectedRemoteData);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "getEngineTrackingCode",
+  fn: () => {
+    const engineTrackingCode = client.getEngineTrackingCode(visitorCode);
+
+    assertEquals(
+      engineTrackingCode,
+      "window.kameleoonQueue=window.kameleoonQueue||[];"
+    );
+  },
+});
+
+Deno.test({
+  name: "addData + flushData",
+  fn: async () => {
+    const customData = new CustomData(8, "value_1");
+
+    client.addData(visitorCode, customData);
+
+    const unsentTargetingData = (
+      client as any
+    ).campaignConfiguration.unsentTargetingData[visitorCode].get(8);
+
+    assertEquals(Boolean(unsentTargetingData), true);
+
+    client.flushData();
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const laterUnsentTargetingData = (client as any).campaignConfiguration
+      .unsentTargetingData[visitorCode];
+
+    assertEquals(Boolean(laterUnsentTargetingData), false);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
 
 Deno.test({
   name: "getFeatureFlagVariationKey",
@@ -23,6 +81,36 @@ Deno.test({
 });
 
 Deno.test({
+  name: "getFeatureFlagVariable",
+  fn: () => {
+    const featureKey = "test_feature_variables";
+    const visitorCode = "TestObtainFeatureVariable";
+    const variableKey = "stringKey";
+
+    const variable = client.getFeatureFlagVariable({
+      visitorCode,
+      featureKey,
+      variableKey,
+    });
+
+    assertEquals(variable.value, "TestString");
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "isFeatureFlagActive",
+  fn: () => {
+    const isActive = client.isFeatureFlagActive(visitorCode, featureKey);
+
+    assertEquals(isActive, true);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
   name: "triggerExperiment",
   fn: () => {
     const variationId = client.triggerExperiment(visitorCode, experimentId);
@@ -31,6 +119,16 @@ Deno.test({
   },
   sanitizeOps: false,
   sanitizeResources: false,
+});
+
+Deno.test({
+  name: "getExperimentVariationData",
+  fn: () => {
+    const experimentVariationData = client.getExperimentVariationData(617899);
+    const expectedData = { toto: true, titi: "tata", tutu: false };
+
+    assertEquals(experimentVariationData, expectedData);
+  },
 });
 
 Deno.test({
@@ -96,10 +194,46 @@ Deno.test({
   },
 });
 
-// Deno.test({
-//   name: "getVisitorExperiments",
-//   fn: () => {
-//     const visitorExperiments = client.getVisitorExperiments(visitorCode);
+Deno.test({
+  name: "getVisitorExperiments",
+  fn: () => {
+    const visitorExperiments = client.getVisitorExperiments(visitorCode);
 
-//   },
-// });
+    const expectedVisitorExperiments = [
+      { id: 136200, name: "Mobile SDK Server_Side_Only" },
+      { id: 136204, name: "Mobile SDK Hybrid" },
+      { id: 136226, name: "Mobile SDK Multi_Variation_Test" },
+      { id: 146968, name: "Test RespoolTime Experiment" },
+    ];
+
+    assertEquals(expectedVisitorExperiments, visitorExperiments);
+  },
+});
+
+Deno.test({
+  name: "getVisitorFeatureFlags",
+  fn: () => {
+    const visitorFeatureFlags = client.getVisitorFeatureFlags(visitorCode);
+
+    const expectedVisitorFeatureFlags = [
+      { id: 137, key: "complextargeting_2" },
+      { id: 232, key: "feature_flag_multi_environment_test" },
+      { id: 299, key: "feature_flag_test_real_time_configuration_service" },
+      { id: 1118, key: "ff_new_rules" },
+    ];
+
+    assertEquals(expectedVisitorFeatureFlags, visitorFeatureFlags);
+  },
+});
+
+Deno.test({
+  name: "getRemoteVisitorData",
+  fn: async () => {
+    const visitorData = await client.getRemoteVisitorData(visitorCode);
+    const expectedVisitorData = { index: 8, value: ["value_1"] };
+
+    assertObjectMatch(visitorData[0], expectedVisitorData);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});

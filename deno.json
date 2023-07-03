@@ -1,7 +1,7 @@
 {
   "imports": {
     "std/": "https://deno.land/std@0.136.0/",
-    "@kameleoon/nodejs-sdk": "npm:@kameleoon/nodejs-sdk@2.3.0"
+    "@kameleoon/nodejs-sdk": "npm:@kameleoon/nodejs-sdk@2.3.1"
   },
   "compilerOptions": {
     "allowJs": false,
@@ -9,7 +9,8 @@
     "strict": true
   },
   "tasks": {
-    "dev": " deno run --watch --allow-net --allow-read --allow-env --cached-only app.ts"
+    "dev": "deno run --watch --allow-net --allow-read --allow-env app.ts",
+    "test": "deno test --allow-net --allow-read --allow-env"
   },
   "nodeModulesDir": true,
   "lint": {

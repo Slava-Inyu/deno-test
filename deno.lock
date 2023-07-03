@@ -18,20 +18,20 @@
   },
   "npm": {
     "specifiers": {
-      "@kameleoon/nodejs-sdk@2.3.0": "@kameleoon/nodejs-sdk@2.3.0"
+      "@kameleoon/nodejs-sdk@2.3.1": "@kameleoon/nodejs-sdk@2.3.1"
     },
     "packages": {
-      "@kameleoon/javascript-sdk-core@2.5.0": {
-        "integrity": "sha512-FyXRdewTD5UkTQimnS9T1uwrKmrZaob20MnUEBoBPdrFqWqnovSsOEFaMipivLeFunqQ0u+Kc5i2DdB81eaPVQ==",
+      "@kameleoon/javascript-sdk-core@2.5.1": {
+        "integrity": "sha512-em97DkBUvRVfF/w9st1QgGrR2a84VUfkxC5DUeer5xuaxunmQWegTvrEQuMyIIsmcFJZczpBmw0MchWiYUMmhA==",
         "dependencies": {
           "crypto-js": "crypto-js@4.1.1",
           "ts-res": "ts-res@1.1.1"
         }
       },
-      "@kameleoon/nodejs-sdk@2.3.0": {
-        "integrity": "sha512-alYK26vFLe2/9uJExewNI2b1OWK0zR1iqPU7OHQvy0zQ3wgMxMlOFkPgNCfrIXF4Yi4XtG6SQMarVEo1+BThwg==",
+      "@kameleoon/nodejs-sdk@2.3.1": {
+        "integrity": "sha512-YObV+OPO6FDmOf5SaUPjnUeU+ZR1m4JX0UNW5xq+WGFXBceGM2LxNbTSN2NbRZSSOqJ2dc6mhq/0PjUERIuC5A==",
         "dependencies": {
-          "@kameleoon/javascript-sdk-core": "@kameleoon/javascript-sdk-core@2.5.0",
+          "@kameleoon/javascript-sdk-core": "@kameleoon/javascript-sdk-core@2.5.1",
           "eventsource": "eventsource@2.0.2",
           "node-fetch": "node-fetch@2.6.1"
         }
