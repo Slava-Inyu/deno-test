@@ -9,11 +9,6 @@ const client = new KameleoonClient({ siteCode: "tndueuutdq" });
 await client.initialize();
 
 Deno.test({
-  name: "onConfigurationUpdate",
-  fn: () => {},
-});
-
-Deno.test({
   name: "getRemoteData",
   fn: async () => {
     const remoteData = await client.getRemoteData("test-1");
